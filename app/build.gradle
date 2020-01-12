@@ -8,6 +8,10 @@ android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "com.arctouch.codechallenge"
+        buildConfigField("String", "API_URL", "\"https://api.themoviedb.org/3/\"")
+        buildConfigField("String", "API_KEY", "\"1f54bd990f1cdfb230adb312546d765d\"")
+        buildConfigField("String", "DEFAULT_LANGUAGE", "\"pt-BR\"")
+        buildConfigField("String", "DEFAULT_REGION", "\"BR\"")
         minSdkVersion 19
         targetSdkVersion 29
         versionCode 1
@@ -16,8 +20,20 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        es_release {
+            initWith release
+            buildConfigField("String", "DEFAULT_LANGUAGE", "\"es\"")
+            buildConfigField("String", "DEFAULT_REGION", "\"ES\"")
+        }
+
+        es_debug {
+            initWith debug
+            buildConfigField("String", "DEFAULT_LANGUAGE", "\"es\"")
+            buildConfigField("String", "DEFAULT_REGION", "\"ES\"")
         }
     }
 }
