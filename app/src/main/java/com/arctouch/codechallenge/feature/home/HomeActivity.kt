@@ -9,6 +9,7 @@ import com.arctouch.codechallenge.data.Cache
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.home_activity.*
+import java.util.*
 
 class HomeActivity : BaseActivity() {
 
@@ -16,7 +17,7 @@ class HomeActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home_activity)
 
-        api.upcomingMovies(BuildConfig.API_KEY, BuildConfig.DEFAULT_LANGUAGE, 1, BuildConfig.DEFAULT_REGION)
+        api.upcomingMovies(BuildConfig.API_KEY, Locale.getDefault().language, 1, Locale.getDefault().country)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {

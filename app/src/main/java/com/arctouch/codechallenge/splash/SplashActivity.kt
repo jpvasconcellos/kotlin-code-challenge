@@ -9,6 +9,7 @@ import com.arctouch.codechallenge.data.Cache
 import com.arctouch.codechallenge.feature.home.HomeActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.util.*
 
 class SplashActivity : BaseActivity() {
 
@@ -16,7 +17,7 @@ class SplashActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.splash_activity)
 
-        api.genres(BuildConfig.API_KEY, BuildConfig.DEFAULT_LANGUAGE)
+        api.genres(BuildConfig.API_KEY, Locale.getDefault().language)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
