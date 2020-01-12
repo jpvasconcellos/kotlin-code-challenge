@@ -1,6 +1,7 @@
 package com.arctouch.codechallenge.feature.home
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.arctouch.codechallenge.data.Repository
@@ -10,10 +11,17 @@ import io.reactivex.disposables.CompositeDisposable
 
 class HomeViewModel(val repository: Repository) : ViewModel() {
     var genres = listOf<Genre>()
-    val upcomingMovies = MutableLiveData<List<Movie>>()
+    var movieList = ArrayList<Movie>()
+    private val _upcomingMovies = MutableLiveData<List<Movie>>()
+    val upcomingMovies: LiveData<List<Movie>> = _upcomingMovies
     private val disposables = CompositeDisposable()
     private var currentPage: Int = 1
     private var totalPages: Int = 1
+
+    init {
+        fetchGenres()
+        fetchUpcomingMovies(1)
+    }
 
     private fun fetchGenres() {
         disposables.add(
@@ -34,7 +42,8 @@ class HomeViewModel(val repository: Repository) : ViewModel() {
         disposables.add(
             repository.getUpcomingMovies(page).subscribe(
                 {
-                    upcomingMovies.postValue(it.first)
+                    _upcomingMovies.postValue(it.first)
+                    movieList.addAll(it.first)
                     totalPages = it.second
 
                 }, {
@@ -45,16 +54,6 @@ class HomeViewModel(val repository: Repository) : ViewModel() {
                 }
             )
         )
-    }
-
-    fun fetchData() {
-        if (genres.isEmpty()) {
-            fetchGenres()
-        }
-
-        if (upcomingMovies.getValue().isNullOrEmpty()) {
-            fetchUpcomingMovies(currentPage)
-        }
     }
 
     fun fetchMoreData() {

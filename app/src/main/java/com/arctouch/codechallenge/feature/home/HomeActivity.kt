@@ -14,7 +14,7 @@ class HomeActivity : AppCompatActivity() {
 
     private val homeViewModel: HomeViewModel by viewModel()
     private val linearLayoutManager = LinearLayoutManager(this)
-    private var homeAdapter = HomeAdapter(ArrayList())
+    private lateinit var homeAdapter: HomeAdapter
     private val lastVisibleItemPosition: Int
         get() = linearLayoutManager.findLastVisibleItemPosition()
 
@@ -22,12 +22,12 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home_activity)
 
-        homeViewModel.fetchData()
-
         homeViewModel.upcomingMovies.observe(this, Observer { movieList ->
             homeAdapter.addAll(movieList)
             progressBar.visibility = View.GONE
         })
+
+        homeAdapter = HomeAdapter((homeViewModel.movieList))
 
         recyclerView.apply {
             adapter = homeAdapter
