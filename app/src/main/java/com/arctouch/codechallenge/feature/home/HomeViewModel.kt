@@ -12,7 +12,8 @@ class HomeViewModel(val repository: Repository) : ViewModel() {
     var genres = listOf<Genre>()
     val upcomingMovies = MutableLiveData<List<Movie>>()
     private val disposables = CompositeDisposable()
-    private val currentPage: Int = 1
+    private var currentPage: Int = 1
+    private var totalPages: Int = 1
 
     private fun fetchGenres() {
         disposables.add(
@@ -29,11 +30,13 @@ class HomeViewModel(val repository: Repository) : ViewModel() {
         )
     }
 
-    private fun fetchUpcomingMovies() {
+    private fun fetchUpcomingMovies(page: Int) {
         disposables.add(
-            repository.getUpcomingMovies().subscribe(
+            repository.getUpcomingMovies(page).subscribe(
                 {
-                    upcomingMovies.postValue(it)
+                    upcomingMovies.postValue(it.first)
+                    totalPages = it.second
+
                 }, {
                     Log.d(
                         HomeViewModel::class.java.simpleName,
@@ -50,7 +53,13 @@ class HomeViewModel(val repository: Repository) : ViewModel() {
         }
 
         if (upcomingMovies.getValue().isNullOrEmpty()) {
-            fetchUpcomingMovies()
+            fetchUpcomingMovies(currentPage)
+        }
+    }
+
+    fun fetchMoreData() {
+        if (currentPage + 1 <= totalPages) {
+            fetchUpcomingMovies(++currentPage)
         }
     }
 

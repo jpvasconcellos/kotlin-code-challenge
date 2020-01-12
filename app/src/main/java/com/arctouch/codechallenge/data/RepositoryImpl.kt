@@ -22,7 +22,7 @@ class RepositoryImpl : Repository {
         }
     }
 
-    override fun getUpcomingMovies(page: Long): Single<List<Movie>> {
+    override fun getUpcomingMovies(page: Int): Single<Pair<List<Movie>, Int>> {
         return Single.create { emitter ->
             TmdbService.service.upcomingMovies(
                 BuildConfig.API_KEY,
@@ -36,7 +36,7 @@ class RepositoryImpl : Repository {
                         movie.copy(genres = Cache.genres.filter { movie.genreIds?.contains(it.id) == true })
                     }
 
-                    emitter.onSuccess(moviesWithGenres)
+                    emitter.onSuccess(Pair(moviesWithGenres, it.totalPages))
                 }, {
                     emitter.onError(it)
                 })

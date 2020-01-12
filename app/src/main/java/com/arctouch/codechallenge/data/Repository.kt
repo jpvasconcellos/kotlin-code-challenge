@@ -6,5 +6,5 @@ import io.reactivex.Single
 
 interface Repository {
     fun getGenres(): Single<List<Genre>>
-    fun getUpcomingMovies(page: Long = 1): Single<List<Movie>>
+    fun getUpcomingMovies(page: Int): Single<Pair<List<Movie>, Int>>
 }
