@@ -14,7 +14,7 @@ class HomeViewModel(val repository: Repository) : ViewModel() {
     private val _upcomingMovies = MutableLiveData<List<Movie>>()
     val upcomingMovies: LiveData<List<Movie>> = _upcomingMovies
     private val disposables = CompositeDisposable()
-    private var currentPage: Int = 1
+    private var currentPage: Int = 0
     private var totalPages: Int = 1
 
     init {
@@ -26,7 +26,7 @@ class HomeViewModel(val repository: Repository) : ViewModel() {
             repository.getGenres().subscribe(
                 {
                     Cache.cacheGenres(it)
-                    fetchUpcomingMovies(1)
+                    fetchUpcomingMovies()
                 },
                 {
                     Log.d(
@@ -37,27 +37,27 @@ class HomeViewModel(val repository: Repository) : ViewModel() {
         )
     }
 
-    private fun fetchUpcomingMovies(page: Int) {
-        disposables.add(
-            repository.getUpcomingMovies(page).subscribe(
-                {
-                    _upcomingMovies.postValue(it.first)
-                    totalPages = it.second
+    private fun fetchUpcomingMovies() {
+        if (currentPage < totalPages) {
+            disposables.add(
+                repository.getUpcomingMovies(++currentPage).subscribe(
+                    {
+                        _upcomingMovies.postValue(it.first)
+                        totalPages = it.second
 
-                }, {
-                    Log.d(
-                        HomeViewModel::class.java.simpleName,
-                        it.message ?: "Unexpected error requesting movies"
-                    )
-                }
+                    }, {
+                        Log.d(
+                            HomeViewModel::class.java.simpleName,
+                            it.message ?: "Unexpected error requesting movies"
+                        )
+                    }
+                )
             )
-        )
+        }
     }
 
     fun fetchMoreData() {
-        if (currentPage + 1 <= totalPages) {
-            fetchUpcomingMovies(++currentPage)
-        }
+        fetchUpcomingMovies()
     }
 
     override fun onCleared() {

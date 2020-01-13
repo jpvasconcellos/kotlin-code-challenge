@@ -38,7 +38,10 @@ class HomeActivity : AppCompatActivity(), ItemClickInterface<Movie> {
         }
 
         homeViewModel.upcomingMovies.observe(this, Observer { movieList ->
-            homeAdapter.addAll(movieList)
+            if (!homeViewModel.movieList.containsAll(movieList)) {
+                homeAdapter.addAll(movieList)
+            }
+
             progressBar.visibility = View.GONE
         })
     }
