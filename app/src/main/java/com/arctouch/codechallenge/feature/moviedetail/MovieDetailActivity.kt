@@ -1,6 +1,7 @@
 package com.arctouch.codechallenge.feature.moviedetail
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.arctouch.codechallenge.R
 import com.arctouch.codechallenge.util.buildBackdropUrl
@@ -31,5 +32,16 @@ class MovieDetailActivity : AppCompatActivity() {
             movie_detail_backdrop.load(getString(MOVIE_BACKDROP)?.buildBackdropUrl().orEmpty())
             movie_detail_poster.load(getString(MOVIE_POSTER)?.buildPosterUrl().orEmpty())
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 }
