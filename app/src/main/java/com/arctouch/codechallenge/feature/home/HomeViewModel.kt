@@ -4,13 +4,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.arctouch.codechallenge.data.Cache
 import com.arctouch.codechallenge.data.Repository
-import com.arctouch.codechallenge.model.Genre
 import com.arctouch.codechallenge.model.Movie
 import io.reactivex.disposables.CompositeDisposable
 
 class HomeViewModel(val repository: Repository) : ViewModel() {
-    var genres = listOf<Genre>()
     var movieList = ArrayList<Movie>()
     private val _upcomingMovies = MutableLiveData<List<Movie>>()
     val upcomingMovies: LiveData<List<Movie>> = _upcomingMovies
@@ -20,14 +19,14 @@ class HomeViewModel(val repository: Repository) : ViewModel() {
 
     init {
         fetchGenres()
-        fetchUpcomingMovies(1)
     }
 
     private fun fetchGenres() {
         disposables.add(
             repository.getGenres().subscribe(
                 {
-                    genres = it
+                    Cache.cacheGenres(it)
+                    fetchUpcomingMovies(1)
                 },
                 {
                     Log.d(
@@ -43,13 +42,12 @@ class HomeViewModel(val repository: Repository) : ViewModel() {
             repository.getUpcomingMovies(page).subscribe(
                 {
                     _upcomingMovies.postValue(it.first)
-                    movieList.addAll(it.first)
                     totalPages = it.second
 
                 }, {
                     Log.d(
                         HomeViewModel::class.java.simpleName,
-                        it.message ?: "Unexpected error requesting genres"
+                        it.message ?: "Unexpected error requesting movies"
                     )
                 }
             )

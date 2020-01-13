@@ -13,9 +13,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.arctouch.codechallenge.feature.home.HomeActivity">
+        <activity
+            android:name=".feature.moviedetail.MovieDetailActivity"
+            android:parentActivityName=".feature.home.HomeActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".feature.home.HomeActivity" />
+        </activity>
+
+        <activity android:name=".feature.home.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
 
                 <action android:name="android.intent.action.VIEW" />
@@ -26,10 +35,8 @@
                 <data
                     android:host="codechallenge"
                     android:scheme="arctouch" />
-
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

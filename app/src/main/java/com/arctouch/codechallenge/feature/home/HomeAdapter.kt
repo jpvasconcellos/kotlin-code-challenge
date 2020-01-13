@@ -6,12 +6,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.arctouch.codechallenge.R
 import com.arctouch.codechallenge.model.Movie
+import com.arctouch.codechallenge.util.ItemClickInterface
 import com.arctouch.codechallenge.util.buildPosterUrl
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
+import com.arctouch.codechallenge.util.load
 import kotlinx.android.synthetic.main.movie_item.view.*
 
-class HomeAdapter(private val movies: ArrayList<Movie> = ArrayList()) : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
+class HomeAdapter(
+    private val movies: ArrayList<Movie> = ArrayList(),
+    var itemClickInterface: ItemClickInterface<Movie>? = null
+) : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -19,11 +22,7 @@ class HomeAdapter(private val movies: ArrayList<Movie> = ArrayList()) : Recycler
             itemView.titleTextView.text = movie.title
             itemView.genresTextView.text = movie.genres?.joinToString(separator = ", ") { it.name }
             itemView.releaseDateTextView.text = movie.releaseDate
-
-            Glide.with(itemView)
-                .load(movie.posterPath?.buildPosterUrl())
-                .apply(RequestOptions().placeholder(R.drawable.ic_image_placeholder))
-                .into(itemView.posterImageView)
+            itemView.posterImageView.load(movie.posterPath?.buildPosterUrl().orEmpty())
         }
     }
 
@@ -34,7 +33,12 @@ class HomeAdapter(private val movies: ArrayList<Movie> = ArrayList()) : Recycler
 
     override fun getItemCount() = movies.size
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(movies[position])
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(movies[position])
+        holder.itemView.setOnClickListener {
+            itemClickInterface?.itemClicked(movies[position])
+        }
+    }
 
     fun addAll(newMovies: List<Movie>) {
         movies.addAll(newMovies)
