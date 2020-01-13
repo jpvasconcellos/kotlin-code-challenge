@@ -6,13 +6,12 @@ import com.arctouch.codechallenge.model.Genre
 import com.arctouch.codechallenge.model.Movie
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import java.util.*
 
 class RepositoryImpl : Repository {
 
     override fun getGenres(): Single<List<Genre>> {
         return Single.create { emitter ->
-            TmdbService.service.genres(BuildConfig.API_KEY, Locale.getDefault().language)
+            TmdbService.service.genres(BuildConfig.API_KEY, BuildConfig.DEFAULT_LANGUAGE)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     emitter.onSuccess(it.genres)
@@ -22,13 +21,18 @@ class RepositoryImpl : Repository {
         }
     }
 
+    /*
+     I wanted to use Locale.getDefault().displayLanguage, but the correct information is
+     in Locale.getDefault().toLanguageTag(), which is only available at API 21.
+     So I reverted to build config values.
+     */
     override fun getUpcomingMovies(page: Int): Single<Pair<List<Movie>, Int>> {
         return Single.create { emitter ->
             TmdbService.service.upcomingMovies(
                 BuildConfig.API_KEY,
-                Locale.getDefault().language,
+                BuildConfig.DEFAULT_LANGUAGE,
                 page,
-                Locale.getDefault().country
+                BuildConfig.DEFAULT_COUNTRY
             )
                 .subscribeOn(Schedulers.io())
                 .subscribe({
