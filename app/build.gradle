@@ -41,7 +41,9 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     implementation 'org.koin:koin-android-viewmodel:2.0.0'
 
-    debugImplementation 'com.squareup.okhttp3:logging-interceptor:4.2.1'
+    // must use 3.12.2 because minApi is 19
+    //noinspection GradleDependency
+    debugImplementation 'com.squareup.okhttp3:logging-interceptor:3.12.2'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'androidx.arch.core:core-testing:2.1.0'

@@ -1,5 +1,6 @@
 package com.arctouch.codechallenge.api
 
+import android.util.Log
 import com.arctouch.codechallenge.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -23,6 +24,13 @@ object TmdbService {
                 val logging = HttpLoggingInterceptor()
                 logging.level = HttpLoggingInterceptor.Level.BODY
                 addInterceptor(logging)
+            }
+
+            try {
+                val tlsSocket = TLSSocketFactory()
+                sslSocketFactory(tlsSocket, tlsSocket.trustManager)
+            } catch (e: Exception) {
+                Log.d(TmdbService::class.java.simpleName, e.message ?: "Error initializing TLS Factory")
             }
 
             return this.build()
